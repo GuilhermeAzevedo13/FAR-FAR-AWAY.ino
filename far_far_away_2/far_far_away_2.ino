@@ -26,6 +26,11 @@ void setup() {
   // Registrar o LCD 16x2
   lcd_1.begin();
 
+  // Zerar a EEPROM
+  for (int i = 0; i < EEPROM.length(); i++) {
+    EEPROM.write(i, 0);
+  }
+
   // Lendo o valor anterior da EEPROM e atribuindo a contadorAnterior
   contadorAnterior = EEPROM.read(0);
 
@@ -148,8 +153,18 @@ void botao2() {
   contadorAnterior = contadorAtual;
   // Comeca um novo dia com o contadorAtual Zerado
   contadorAtual = 0;
+  // Limpa a Tela
+  lcd_1.clear();
   // Chama a Funcao que mostra os valores de Now e Diference zerados
-  atualizarDisplay();
+  lcd_1.print("NOW: ");
+  // Printa na tela a quantidade de pessoas no dia atual que passaram na catraca
+  lcd_1.print(contadorAtual);
+  // Set do Cursor na coluna 0 e linha 1 do LCD
+  lcd_1.setCursor(0, 1);
+  // Printa no LCD a palavra Diference
+  lcd_1.print("Diference: ");
+  // Printa na tela a Diferenca de pessoas no dia atual que passaram na catraca e no dia Anterior
+  lcd_1.print(0);
   // MAntem o Now e Diference por 1s na tela
   delay(1000);
   // Set do Cursor na coluna 16 e linha 0
@@ -236,18 +251,12 @@ void atualizarDisplay() {
     // Printa o numero Zero no primeiro dia de inicializacao do embarcado
     lcd_1.print(zero);
     // Condicao de apos 1 dia do sistema iniciado verificamos se o Contador Atual eh maior que o contadorAnterior
-  } else if(contadorAnterior > 0) {
+  }else{
     // contadorAtual eh menor ou igual ao contadorAnterior.
-    if (contadorAtual <= contadorAnterior){
-      // Printa o numero zero
-      lcd_1.print(zero);
-      // contadorAtual eh maior que o contadorAnterior.
-    } else {
-      // Tira a diferenca entre contadorAtual e contadorAnterior
-      diferenca = contadorAtual - contadorAnterior;
-      // Printa na tela a diferenca
-      lcd_1.print(diferenca);
-    }
+    // Tira a diferenca entre contadorAtual e contadorAnterior
+    diferenca = contadorAtual - contadorAnterior;
+    // Printa na tela a diferenca
+    lcd_1.print(diferenca);
   }
   // Espera 200 ms
   delay(200);
